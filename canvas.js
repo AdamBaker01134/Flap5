@@ -21,8 +21,7 @@ function setup() {
 
 const state = {
     READY: "ready",
-    PREPARE_CREATE: "prepare_create",
-    CREATING: "creating",
+    PAUSED: "paused",
 }
 
 let currentState = state.READY;
@@ -30,6 +29,7 @@ let currentState = state.READY;
 function keyPressed () {
     if (keyCode  === ESCAPE) {
         model.togglePause();
+        currentState = model.paused ? currentState = state.PAUSED : currentState = state.READY;
     }
 }
 
@@ -38,24 +38,15 @@ function mousePressed () {}
 // █▀▀ ▄▀█ █▀▄▀█ █▀▀   █░░ █▀█ █▀█ █▀█
 // █▄█ █▀█ █░▀░█ ██▄   █▄▄ █▄█ █▄█ █▀▀
 
+let clock = 0;
+
 function draw() {
     if (model.paused) {
         return;
     }
-    /* Check current state to ensure that we create a new obstacle once per 5 seconds */
-    switch (currentState) {
-        case state.PREPARE_CREATE:
-            model.addObstacle();
-            currentState = state.CREATING;
-            setTimeout(() => currentState = state.READY, 100);
-            break;
-        case state.CREATING:
-            break;
-        default:
-            if (millis() % 5000 < 50) {
-                currentState = state.PREPARE_CREATE;
-            }
-            break;
+    if (++clock >= 300) {
+        clock = 0;
+        model.addObstacle();
     }
     model.moveObstacles();
 }
