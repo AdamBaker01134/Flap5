@@ -5,6 +5,7 @@
 function Model (width, height) {
     this.width = width;
     this.height = height;
+    this.paused = false;
     this.obstacles = [];
     this.subscribers = [];
 }
@@ -25,6 +26,12 @@ Model.prototype.moveObstacles = function () {
     if (this.obstacles.length > 0 && this.obstacles[0].x < 0) {
         this.obstacles.shift();
     }
+    this.notifySubscribers();
+}
+
+/** Toggle the paused state in the model */
+Model.prototype.togglePause = function () {
+    this.paused = !this.paused;
     this.notifySubscribers();
 }
 

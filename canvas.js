@@ -21,14 +21,17 @@ function setup() {
 
 const state = {
     READY: "ready",
-    PAUSED: "paused",
     PREPARE_CREATE: "prepare_create",
     CREATING: "creating",
 }
 
 let currentState = state.READY;
 
-function keyPressed () {}
+function keyPressed () {
+    if (keyCode  === ESCAPE) {
+        model.togglePause();
+    }
+}
 
 function mousePressed () {}
 
@@ -36,6 +39,9 @@ function mousePressed () {}
 // █▄█ █▀█ █░▀░█ ██▄   █▄▄ █▄█ █▄█ █▀▀
 
 function draw() {
+    if (model.paused) {
+        return;
+    }
     /* Check current state to ensure that we create a new obstacle once per 5 seconds */
     switch (currentState) {
         case state.PREPARE_CREATE:
