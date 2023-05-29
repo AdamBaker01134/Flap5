@@ -1,5 +1,8 @@
 "use strict";
 
+// █▀ █▀▀ ▀█▀ █░█ █▀█
+// ▄█ ██▄ ░█░ █▄█ █▀▀
+
 const DISPLAY_WIDTH = 1280;
 const DISPLAY_HEIGHT = 1024;
 
@@ -13,21 +16,40 @@ function setup() {
     model.addSubscriber(view);
 }
 
-function draw() {}
-
-
-// ░█████╗░░█████╗░███╗░░██╗████████╗██████╗░░█████╗░██╗░░░░░██╗░░░░░███████╗██████╗░
-// ██╔══██╗██╔══██╗████╗░██║╚══██╔══╝██╔══██╗██╔══██╗██║░░░░░██║░░░░░██╔════╝██╔══██╗
-// ██║░░╚═╝██║░░██║██╔██╗██║░░░██║░░░██████╔╝██║░░██║██║░░░░░██║░░░░░█████╗░░██████╔╝
-// ██║░░██╗██║░░██║██║╚████║░░░██║░░░██╔══██╗██║░░██║██║░░░░░██║░░░░░██╔══╝░░██╔══██╗
-// ╚█████╔╝╚█████╔╝██║░╚███║░░░██║░░░██║░░██║╚█████╔╝███████╗███████╗███████╗██║░░██║
-// ░╚════╝░░╚════╝░╚═╝░░╚══╝░░░╚═╝░░░╚═╝░░╚═╝░╚════╝░╚══════╝╚══════╝╚══════╝╚═╝░░╚═╝
+// █▀▀ █▀█ █▄░█ ▀█▀ █▀█ █▀█ █░░ █░░ █▀▀ █▀█
+// █▄▄ █▄█ █░▀█ ░█░ █▀▄ █▄█ █▄▄ █▄▄ ██▄ █▀▄
 
 const state = {
     READY: "ready",
-    PAUSED: "paused"
+    PAUSED: "paused",
+    PREPARE_CREATE: "prepare_create",
+    CREATING: "creating",
 }
+
+let currentState = state.READY;
 
 function keyPressed () {}
 
 function mousePressed () {}
+
+// █▀▀ ▄▀█ █▀▄▀█ █▀▀   █░░ █▀█ █▀█ █▀█
+// █▄█ █▀█ █░▀░█ ██▄   █▄▄ █▄█ █▄█ █▀▀
+
+function draw() {
+    /* Check current state to ensure that we create a new obstacle once per 5 seconds */
+    switch (currentState) {
+        case state.PREPARE_CREATE:
+            model.addObstacle();
+            currentState = state.CREATING;
+            setTimeout(() => currentState = state.READY, 100);
+            break;
+        case state.CREATING:
+            break;
+        default:
+            if (millis() % 5000 < 50) {
+                currentState = state.PREPARE_CREATE;
+            }
+            break;
+    }
+    model.moveObstacles();
+}
