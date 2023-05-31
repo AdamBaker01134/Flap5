@@ -9,6 +9,7 @@ function Model (width, height) {
     this.gameOver = false;
     this.groundY = this.height - 200;
     this.player = new Player(300, this.groundY, 20);
+    this.score = 0;
     this.obstacles = [];
     this.subscribers = [];
 }
@@ -17,6 +18,7 @@ function Model (width, height) {
 Model.prototype.reset = function () {
     this.player.setPosition(300, this.groundY);
     this.obstacles = [];
+    this.score = 0;
     this.gameOver = false;
     this.notifySubscribers();
 }
@@ -57,6 +59,12 @@ Model.prototype.jump = function () {
     this.notifySubscribers();
 }
 
+/** Add a point to the score */
+Model.prototype.point = function () {
+    this.score++;
+    this.notifySubscribers();
+}
+
 /** Toggle the paused state in the model */
 Model.prototype.togglePause = function () {
     this.paused = !this.paused;
@@ -70,18 +78,28 @@ Model.prototype.toggleGameOver = function () {
 }
 
 /**
- * Check to see if the player has hit an obstacle
- * @returns {boolean}
+ * Check if the player is within the horizontal bounds of an obstacle
+ * @returns {Obstacle|null}
  */
-Model.prototype.checkObstacleHit = function () {
+Model.prototype.checkObstacleXHit = function () {
     let x = this.player.x;
-    let y = this.player.y;
     for (let i = 0; i < this.obstacles.length; i++) {
         let obstacle = this.obstacles[i];
-        if (x > obstacle.x && x < obstacle.x + obstacle.width && 
-            (y < obstacle.y - obstacle.openingSize / 2  || y > obstacle.y + obstacle.openingSize / 2)) return true;
+        if (x > obstacle.x && x < obstacle.x + obstacle.width) {
+            return obstacle;
+        }
     }
-    return false;
+    return null;
+}
+
+/**
+ * Check if the player y hit the obstacle
+ * @param {Obstacle} obstacle obstacle we are checking
+ * @returns {boolean}
+ */
+Model.prototype.checkObstacleYHit = function (obstacle) {
+    let y = this.player.y;
+    return y < obstacle.y - obstacle.openingSize / 2 || y > obstacle.y + obstacle.openingSize / 2;
 }
 
 /** Subscribe an object to model updates */

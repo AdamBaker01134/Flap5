@@ -58,6 +58,13 @@ View.prototype.draw = function () {
         let message = this.model.paused ? "Paused" : "Game Over";
         text(message, this.model.width / 2, this.model.height / 2);
     }
+
+    fill(255, 255, 255);
+    stroke(0, 0, 0);
+    strokeWeight(2);
+    textAlign(LEFT);
+    textSize(64);
+    text(`Score: ${this.model.score}`, 10, 60);
 }
 
 /** Called when one of the models this view is subscribed to changes */

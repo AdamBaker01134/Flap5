@@ -27,10 +27,10 @@ const state = {
 
 let currentState = state.READY;
 
-function keyPressed () {
+function keyPressed() {
     switch (currentState) {
         case state.READY:
-            if (keyCode  === ESCAPE) {
+            if (keyCode === ESCAPE) {
                 model.togglePause();
                 currentState = state.PAUSED;
             }
@@ -53,24 +53,36 @@ function keyPressed () {
     }
 }
 
-function mousePressed () {}
-
 // █▀▀ ▄▀█ █▀▄▀█ █▀▀   █░░ █▀█ █▀█ █▀█
 // █▄█ █▀█ █░▀░█ ██▄   █▄▄ █▄█ █▄█ █▀▀
 
 let clock = 0;
+let previousObstacle = null;
 
 function draw() {
-    if (model.paused || model.gameOver) {
-        return;
+    switch (currentState) {
+        case state.PAUSED:
+        case state.GAME_OVER:
+            break;
+        case state.READY:
+            if (++clock >= 150) {
+                clock = 0;
+                model.addObstacle();
+            }
+            model.clockUpdate();
+
+            let hit = null;
+            if ((hit = model.checkObstacleXHit()) && hit !== previousObstacle) {
+                if (model.checkObstacleYHit(hit)) {
+                    model.toggleGameOver();
+                    currentState = state.GAME_OVER;
+                    previousObstacle = null;
+                } else {
+                    model.point();
+                    previousObstacle = hit;
+                }
+            }
+            break;
     }
-    if (++clock >= 150) {
-        clock = 0;
-        model.addObstacle();
-    }
-    model.clockUpdate();
-    if (model.checkObstacleHit()) {
-        model.toggleGameOver();
-        currentState = state.GAME_OVER;
-    }
+
 }
