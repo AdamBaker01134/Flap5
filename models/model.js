@@ -38,7 +38,8 @@ Model.prototype.clockUpdate = function () {
 
 /** Make the player jump */
 Model.prototype.jump = function () {
-    this.player.setVelocity(-2.0);
+    if (this.player.velocity > 0) this.player.setVelocity(0.0);
+    this.player.jump();
     this.player.movePlayer();
     this.notifySubscribers();
 }
