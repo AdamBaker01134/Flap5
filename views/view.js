@@ -40,6 +40,28 @@ View.prototype.draw = function () {
         this.model.player.y,
         this.model.player.diameter
     );
+    triangle(
+        this.model.player.x - this.model.player.diameter / 2 - 10,
+        this.model.player.y,
+        this.model.player.x - this.model.player.diameter / 2 + 10,
+        this.model.player.y - 10,
+        this.model.player.x - this.model.player.diameter / 2 + 10,
+        this.model.player.y + 10
+    );
+    fill(0, 0, 0);
+    circle(
+        this.model.player.x + this.model.player.diameter / 8,
+        this.model.player.y - this.model.player.diameter / 16,
+        this.model.player.diameter / 10
+    )
+    fill(255, 165, 0);  // orange
+    rect(
+        this.model.player.x + this.model.player.diameter / 4,
+        this.model.player.y - this.model.player.diameter / 8,
+        this.model.player.diameter / 2,
+        this.model.player.diameter / 4,
+        0, 10, 10,0
+    );
 
     /* Draw text indicator */
     if (this.model.paused || this.model.gameOver) {
