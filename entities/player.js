@@ -4,6 +4,7 @@
 function Player (x, y) {
     this.x = x;
     this.y = y;
+    this.diameter = 40;
     this.acceleration = 0.025;
     this.velocity = 0.0;
 }

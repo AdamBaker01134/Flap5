@@ -6,10 +6,19 @@ function Model (width, height) {
     this.width = width;
     this.height = height;
     this.paused = false;
-    this.player = new Player(300, this.height - 220, 20);
+    this.gameOver = false;
     this.groundY = this.height - 200;
+    this.player = new Player(300, this.groundY, 20);
     this.obstacles = [];
     this.subscribers = [];
+}
+
+/** Reset model after a game over */
+Model.prototype.reset = function () {
+    this.player.setPosition(300, this.groundY);
+    this.obstacles = [];
+    this.gameOver = false;
+    this.notifySubscribers();
 }
 
 /** Add an obstacle to the game environment */
@@ -23,13 +32,17 @@ Model.prototype.addObstacle = function () {
 /** Update all objects from a clock update. */
 Model.prototype.clockUpdate = function () {
     this.obstacles.forEach(obstacle => {
-        obstacle.setPosition(obstacle.x - 1);
+        obstacle.setPosition(obstacle.x - 2);
     });
     if (this.obstacles.length > 0 && this.obstacles[0].x < 0) {
         this.obstacles.shift();
     }
-    if (this.player.y >= this.groundY) {
+    if (this.player.y > this.groundY) {
         this.player.setVelocity(0.0);
+        this.player.setPosition(this.player.x, this.groundY);
+    } else if (this.player.y < 0) {
+        this.player.setVelocity(0.0);
+        this.player.setPosition(this.player.x, 0);
     } else {
         this.player.movePlayer();
     }
@@ -48,6 +61,27 @@ Model.prototype.jump = function () {
 Model.prototype.togglePause = function () {
     this.paused = !this.paused;
     this.notifySubscribers();
+}
+
+/** Player hit an obstacle. Game over... */
+Model.prototype.toggleGameOver = function () {
+    this.gameOver = !this.gameOver;
+    this.notifySubscribers();
+}
+
+/**
+ * Check to see if the player has hit an obstacle
+ * @returns {boolean}
+ */
+Model.prototype.checkObstacleHit = function () {
+    let x = this.player.x;
+    let y = this.player.y;
+    for (let i = 0; i < this.obstacles.length; i++) {
+        let obstacle = this.obstacles[i];
+        if (x > obstacle.x && x < obstacle.x + obstacle.width && 
+            (y < obstacle.y - obstacle.openingSize / 2  || y > obstacle.y + obstacle.openingSize / 2)) return true;
+    }
+    return false;
 }
 
 /** Subscribe an object to model updates */

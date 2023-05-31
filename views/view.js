@@ -38,16 +38,16 @@ View.prototype.draw = function () {
     circle(
         this.model.player.x,
         this.model.player.y,
-        40
+        this.model.player.diameter
     );
 
-    /* Draw paused indicator */
-    if (this.model.paused) {
+    /* Draw text indicator */
+    if (this.model.paused || this.model.gameOver) {
         fill(88, 89, 91);    // dark grey
         rect(
-            this.model.width / 2 - 120,
+            this.model.paused ? this.model.width / 2 - 120 : this.model.width / 2 - 200,
             this.model.height / 2 - 75,
-            240,
+            this.model.paused ? 240 : 400,
             100
         );
         fill(255, 255, 255);
@@ -55,7 +55,8 @@ View.prototype.draw = function () {
         strokeWeight(2);
         textAlign(CENTER);
         textSize(64);
-        text("Paused", this.model.width / 2, this.model.height / 2);
+        let message = this.model.paused ? "Paused" : "Game Over";
+        text(message, this.model.width / 2, this.model.height / 2);
     }
 }
 
