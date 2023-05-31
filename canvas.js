@@ -30,6 +30,8 @@ function keyPressed () {
     if (keyCode  === ESCAPE) {
         model.togglePause();
         currentState = model.paused ? currentState = state.PAUSED : currentState = state.READY;
+    } else if (keyCode === 32) {
+        model.jump();
     }
 }
 
@@ -48,5 +50,5 @@ function draw() {
         clock = 0;
         model.addObstacle();
     }
-    model.moveObstacles();
+    model.clockUpdate();
 }

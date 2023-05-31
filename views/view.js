@@ -11,11 +11,11 @@ View.prototype.draw = function () {
     noStroke();
     /* Draw background */
     fill(135, 206, 235); // sky blue
-    rect(0, 0, model.width, model.height);
+    rect(0, 0, this.model.width, this.model.height);
     fill(0,154,23);  // grass green
-    rect(0, model.height - 200, model.width, 200);
+    rect(0, this.model.groundY, this.model.width, this.model.height - this.model.groundY);
     fill(255, 244, 0);  // sun yellow
-    circle(model.width, 0, 300);
+    circle(this.model.width, 0, 300);
 
     /* Draw each obstacle in the model */
     fill(102, 51, 153); // obstacle purple
@@ -30,9 +30,16 @@ View.prototype.draw = function () {
             obstacle.x - obstacle.width / 2,
             obstacle.y + obstacle.openingSize / 2,
             obstacle.width,
-            model.height - (obstacle.y + obstacle.openingSize / 2)
+            this.model.height - (obstacle.y + obstacle.openingSize / 2)
         ); // Bottom rectangle
     });
+
+    fill(255, 244, 0);  // sun yellow
+    circle(
+        this.model.player.x,
+        this.model.player.y,
+        40
+    );
 
     /* Draw paused indicator */
     if (this.model.paused) {

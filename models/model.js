@@ -6,6 +6,8 @@ function Model (width, height) {
     this.width = width;
     this.height = height;
     this.paused = false;
+    this.player = new Player(300, this.height - 220, 20);
+    this.groundY = this.height - 200;
     this.obstacles = [];
     this.subscribers = [];
 }
@@ -18,14 +20,26 @@ Model.prototype.addObstacle = function () {
     this.notifySubscribers();
 }
 
-/** Update the positions of each obstacle in the model */
-Model.prototype.moveObstacles = function () {
+/** Update all objects from a clock update. */
+Model.prototype.clockUpdate = function () {
     this.obstacles.forEach(obstacle => {
         obstacle.setPosition(obstacle.x - 1);
     });
     if (this.obstacles.length > 0 && this.obstacles[0].x < 0) {
         this.obstacles.shift();
     }
+    if (this.player.y >= this.groundY) {
+        this.player.setVelocity(0.0);
+    } else {
+        this.player.movePlayer();
+    }
+    this.notifySubscribers();
+}
+
+/** Make the player jump */
+Model.prototype.jump = function () {
+    this.player.setVelocity(-2.0);
+    this.player.movePlayer();
     this.notifySubscribers();
 }
 
